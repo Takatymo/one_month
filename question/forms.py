@@ -55,6 +55,21 @@ class UserProfileEditForm(ModelForm):
     ユーザプロファイル編集フォーム
     """
 
+    ACCEPT = ((1, '受信'), (0, '拒否'))
+    default_work_place = WorkPlace.objects.get_or_create(name='東京')
+    default_division = Division.objects.get_or_create(code=2, name='人事')
+    default_work_status= WorkStatus.objects.get_or_create(name='在席')
+
+    work_place = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),
+                                        queryset=WorkPlace.objects.all(), initial=default_work_place)
+    division = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),
+                                      queryset=Division.objects.all(), initial=default_division)
+    work_status = forms.ModelChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),
+                                      queryset=WorkStatus.objects.all(), initial=default_work_status)
+    avatar = forms.ImageField(initial='images/icons/no_image.png')
+    accept_question = forms.RadioSelect(choices=ACCEPT)
+
+
     # タグを一つのみ選ばせる場合
     #tag = CustomChoiceField(label='タグ', queryset=Tag.objects.all(), required=False,
     #                             to_field_name='name')
@@ -63,15 +78,9 @@ class UserProfileEditForm(ModelForm):
     tag_added = forms.CharField(label='新規追加タグを入力する', max_length=512, required=False)
 
     class Meta:
-        ACCEPT = ((1, '受信'), (0, '拒否'))
         model = UserProfile
         fields = ('avatar', 'work_place', 'work_status', 'division', 'accept_question')
-        widgets = {
-            'work_place': forms.RadioSelect(),
-            'work_status': forms.RadioSelect(),
-            'division': forms.RadioSelect(),
-            'accept_question': forms.RadioSelect(choices=ACCEPT),
-        }
+
 
 class KeywordSearchForm(forms.Form):
     keyword = forms.CharField(max_length=100, label='キーワード')

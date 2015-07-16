@@ -1,0 +1,62 @@
+[
+  {
+    "model": "accounts.WorkPlace",
+    "pk": 1,
+    "fields": {
+      "name": "東京"
+    }
+  },
+  {
+    "model": "accounts.WorkPlace",
+    "pk": 2,
+    "fields": {
+      "name": "名古屋"
+    }
+  },
+  {
+    "model": "accounts.WorkPlace",
+    "pk": 3,
+    "fields": {
+      "name": "大阪"
+    }
+  },
+  {
+    "model": "accounts.WorkPlace",
+    "pk": 4,
+    "fields": {
+      "name": "福岡"
+    }
+  },
+  {
+    "model": "accounts.Division",
+    "pk": 1,
+    "fields": {
+      "name": "総務",
+      "code": 1
+    }
+  },
+  {
+    "model": "accounts.Division",
+    "pk": 2,
+    "fields": {
+      "name": "人事",
+      "code": 2
+    }
+  },
+  {
+    "model": "accounts.Division",
+    "pk": 3,
+    "fields": {
+      "name": "開発",
+      "code": 3
+    }
+  },
+  {
+    "model": "accounts.Division",
+    "pk": 4,
+    "fields": {
+      "name": "研究",
+      "code": 4
+    }
+  }
+]

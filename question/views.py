@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.shortcuts import render_to_response, redirect, get_object_or_404, render
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -426,15 +426,7 @@ def mypage(request):
     """
 
     # ユーザのプロファイルを取ってくる
-    work_place, created = WorkPlace.objects.get_or_create(name='東京', defaults=dict(name='東京',),)
-    work_status, created = WorkStatus.objects.get_or_create(name='在席', defaults=dict(name='在席',),)
-    division, created = Division.objects.get_or_create(code=2, name='人事', defaults=dict(code=2, name='人事'))
-    p, created = UserProfile.objects.get_or_create(user=request.user,
-                                                   defaults=dict(avatar='images/icons/pepper.png',
-                                                                 work_place=work_place,
-                                                                 work_status=work_status,
-                                                                 division=division,
-                                                                 accept_question=1,),)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     # ユーザが登録しているタグを取ってくる
     user_tags = UserTag.objects.filter(user=request.user)
@@ -443,13 +435,12 @@ def mypage(request):
     # edit
     if request.method == 'POST':
 
-        form = UserProfileEditForm(request.POST, request.FILES, instance=p)
+        form = UserProfileEditForm(request.POST, request.FILES, instance=user_profile)
 
         # 完了がおされたら
         if form.is_valid():
-            print(form)
-
             r = form.save(commit=False)
+            r.user = request.user
             r.save()
 
             # 選択されたタグから、新規にQuestionTagを生成して保存
@@ -482,15 +473,14 @@ def mypage(request):
         pass
     # new
     else:
-        form = UserProfileEditForm(instance=p)
+        form = UserProfileEditForm(instance=user_profile)
         #tag_form = UserTagEditForm(instance=t)
         # TODO マイページにユーザが登録済みのタグを表示しつつ、追加・編集できるようにしたい
 
     user_question = Question.objects.filter(questioner=request.user)
     user_reply = Reply.objects.filter(answerer=request.user)
-    return render_to_response('question/mypage.html',
-                              {'form': form, 'user_tags':user_tags, 'uprof':p, 'uquestion':user_question, 'ureply':user_reply},
-                              context_instance=RequestContext(request))
+    return render(request, 'question/mypage.html',
+                              {'form': form, 'user_tags':user_tags, 'uprof':user_profile, 'uquestion':user_question, 'ureply':user_reply})
 
 
 @login_required(login_url='/accounts/login')
